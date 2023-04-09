@@ -22,6 +22,7 @@ Some of the SOTA models and techniques used for predicting stock trends and pric
 
 # Methods
 大家可以看看[这个](https://paperswithcode.com/search?q_meta=&q_type=&q=stock)里面的paper 获得点灵感 这里面的都是有实现的
+**![Stock Market Prediction via Deep Learning Techniques: A Survey](https://arxiv.org/pdf/2212.12717.pdf)**
 
 
 # TODO
