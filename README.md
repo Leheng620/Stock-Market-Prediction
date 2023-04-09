@@ -1,8 +1,5 @@
 # Stock-Market-Prediction
 
-# Get started
-1. dowload the data from  or get your own data from ![data_download.ipynb](./data_download.ipynb)
-2. install the package in ![requirements.txt](/requirements.txt) (# Todo not all needed)
 # Models
 Some of the SOTA models and techniques used for predicting stock trends and prices include:
 
@@ -14,8 +11,12 @@ Some of the SOTA models and techniques used for predicting stock trends and pric
 # Datasets:
 
 1. Yahoo Finance: This website provides historical stock prices and other financial data for various companies. You can download the data as a CSV file and use it for training your models.
+
+!!! Tweet & Price Dataset 2014-2016: https://github.com/yumoxu/stocknet-dataset
+
 2. Quandl: Quandl is a platform that provides financial and economic data for various markets. You can access their data through APIs or download it as CSV files.
 3. Kaggle: Kaggle is a platform for hosting machine learning competitions and also provides various datasets for free. You can search for stock market datasets on Kaggle and find one that suits your needs.
+  - 
   - ![2008-2016的新闻数据](https://www.kaggle.com/datasets/aaron7sun/stocknews)
   
 
