@@ -30,4 +30,4 @@ Some of the SOTA models and techniques used for predicting stock trends and pric
 - [ ] paper reading and selection
   - [ ] [ADD: Augmented Disentanglement Distillation Framework for Improving Stock Trend Forecasting](https://paperswithcode.com/paper/add-augmented-disentanglement-distillation)
   - [ ] [Stock Movement Prediction from Tweets and Historical Prices](https://aclanthology.org/P18-1183/)
-
+- [ ] Arima hybrid model
