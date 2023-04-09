@@ -16,7 +16,6 @@ Some of the SOTA models and techniques used for predicting stock trends and pric
 
 2. Quandl: Quandl is a platform that provides financial and economic data for various markets. You can access their data through APIs or download it as CSV files.
 3. Kaggle: Kaggle is a platform for hosting machine learning competitions and also provides various datasets for free. You can search for stock market datasets on Kaggle and find one that suits your needs.
-  - 
   - ![2008-2016的新闻数据](https://www.kaggle.com/datasets/aaron7sun/stocknews)
   
 
@@ -27,6 +26,7 @@ Some of the SOTA models and techniques used for predicting stock trends and pric
 # TODO
 - [x] stock data collection
 - [ ] news data collection
+- [ ] news data processing
 - [ ] paper reading and selection
   - [ ] [ADD: Augmented Disentanglement Distillation Framework for Improving Stock Trend Forecasting](https://paperswithcode.com/paper/add-augmented-disentanglement-distillation)
   - [ ] [Stock Movement Prediction from Tweets and Historical Prices](https://aclanthology.org/P18-1183/)
