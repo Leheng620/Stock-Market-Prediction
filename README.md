@@ -20,6 +20,13 @@ Some of the SOTA models and techniques used for predicting stock trends and pric
   
 
 # Methods
-1. [Stock Movement Prediction from Tweets and Historical Prices](https://aclanthology.org/P18-1183/)
-2. [ADD: Augmented Disentanglement Distillation Framework for Improving Stock Trend Forecasting](https://paperswithcode.com/paper/add-augmented-disentanglement-distillation)
-3. 大家可以看看[这个](https://paperswithcode.com/search?q_meta=&q_type=&q=stock)里面的paper 获得点灵感 这里面的都是有实现的
+大家可以看看[这个](https://paperswithcode.com/search?q_meta=&q_type=&q=stock)里面的paper 获得点灵感 这里面的都是有实现的
+
+
+# TODO
+- [x] stock data collection
+- [ ] news data collection
+- [ ] paper reading and selection
+  - [ ] [ADD: Augmented Disentanglement Distillation Framework for Improving Stock Trend Forecasting](https://paperswithcode.com/paper/add-augmented-disentanglement-distillation)
+  - [ ] [Stock Movement Prediction from Tweets and Historical Prices](https://aclanthology.org/P18-1183/)
+
