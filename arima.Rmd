@@ -1,0 +1,85 @@
+---
+title: 
+author: Haichao Ji
+output: 
+  html_document: 
+    theme: united
+    toc: yes
+    toc_float: true
+    highlight: tango
+bibliography: midtermref.bib
+csl: ecology.csl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE,
+	fig.align='center'
+)
+rm(list = ls())
+library(zoo)
+library(tidyverse)
+library(ggplot2)
+library(astsa)
+library(tseries)
+library(forecast)
+library(ggplot2)
+library(knitr)
+library(sjPlot)
+library(sjmisc)
+library(sjlabelled)
+```
+
+```{r}
+aic_table <- function(data,p,q){
+  table <- matrix(NA,(p+1),(q+1))
+  for(i in 0:p) {
+    for(j in 0:q) {
+       table[i+1,j+1] <- arima(data,order=c(i,2,j),include.mean=TRUE)$aic
+    }
+  }
+  table
+}
+```
+
+
+```{r fig.width = 6,fig.height = 3.5}
+setwd(getwd())
+names = c("AAPL","ABB","ABBV","AEP","AGFS","AMGN","AMZN","BA","BABA","BAC","BBL",
+         "BHP","BP","BRK-A","BUD","C","CAT","CELG","CHL","CHTR","CMCSA","CODI",
+         "CSCO","CVX","D","DHR","DIS","DUK","EXC","FB","GD","GE","GOOG","HD",
+         "HON","HRG","HSBC","IEP","INTC","JNJ","JPM","KO","LMT","MA","MCD","MDT","MMM",
+         "MO","MRK","MSFT","NEE","NGG","NVS","ORCL","PCG","PCLN","PEP","PFE","PG",
+         "PICO","PM","PPL","RDS-B","SNY","SO","SPLP","SRE","T",
+         "TM","TOT","TSM","UL","UN","UNH","UPS","UTX","V","VZ","WFC","WMT","XOM"
+         )
+for (i in 1:length(names)){
+stock = names[i]
+data = read.csv(paste("price/",stock,".csv",sep = ""))
+target = data$Adj.Close
+table = aic_table(target,3,3)
+p = which.min(table) %/% 4
+q = which.min(table - 1) %% 4 - 1
+if (q==-1){q = 3}
+arima <- arima(target,order=c(p,1,q),include.mean=TRUE)
+write.csv(data$Adj.Close - fitted(arima), paste("arima/",stock,"_arima.csv",sep = ""))
+}
+```
+
+```{r}
+d2names = c("BCH","BSAC","GMRE","PTR","REX","SNP")
+for (i in 1:length(d2names)){
+stock = names[i]
+data = read.csv(paste("price/",stock,".csv",sep = ""))
+target = data$Adj.Close
+table = aic_table(target,3,3)
+p = which.min(table) %/% 4
+q = which.min(table - 1) %% 4 - 1
+if (q==-1){q = 3}
+arima <- arima(target,order=c(p,1,q),include.mean=TRUE)
+write.csv(data$Adj.Close - fitted(arima), paste("arima/",stock,"_arima.csv",sep = ""))
+}
+```
+
