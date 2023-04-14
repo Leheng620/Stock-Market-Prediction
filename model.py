@@ -1,3 +1,5 @@
+import math
+
 import torch.nn as nn
 import torch
 
@@ -37,3 +39,103 @@ class LSTM(nn.Module):
         out = self.fc(out[:, -1, :])
         # out.size() --> 100, 10
         return out
+
+
+class EncoderBlock(nn.Module):
+    def __init__(self, seq_len, emb_dim, dim_feedforward=2048, nhead=8, num_encoder_layers=6, dropout=0.1, device='cpu'):
+        super(EncoderBlock, self).__init__()
+        self.seq_len = seq_len
+        self.emb_dim = emb_dim
+        self.device = device
+
+        # batch_first=True causes input/output tensors to be of shape
+        # (batch_dim, seq_dim, feature_dim)
+        self.multi_head = nn.MultiheadAttention(emb_dim, nhead, batch_first=True)
+        self.layer_norm1 = nn.LayerNorm(emb_dim)
+        self.layer_norm2 = nn.LayerNorm(emb_dim)
+        self.feed_forward = nn.Sequential(
+            nn.Linear(emb_dim, dim_feedforward),
+            nn.ReLU(),
+            nn.Linear(dim_feedforward, emb_dim)
+        )
+        self.dropout = nn.Dropout(dropout)
+
+    def forward(self, x):
+        out1, _ = self.multi_head(x, x, x)
+        out2 = self.layer_norm1(out1 + x)
+        out2 = self.dropout(out2)
+        out3 = self.feed_forward(out2)
+        y = self.layer_norm2(out3 + out2)
+        y = self.dropout(y)
+        return y
+
+
+class Encoder(nn.Module):
+    def __init__(self, seq_len, emb_dim, dim_feedforward=2048, nhead=8, num_encoder_layers=6, dropout=0.1, device='cpu'):
+        super(Encoder, self).__init__()
+        # Hidden dimensions
+        self.seq_len = seq_len
+        self.emb_dim = emb_dim
+        self.device = device
+        self.num_encoder_layers = num_encoder_layers
+        self.dim_feedforward = dim_feedforward
+        self.nhead = nhead
+        self.dropout = dropout
+
+        self.encoder_layers = nn.ModuleList(
+            [
+                EncoderBlock(seq_len, emb_dim, dim_feedforward, nhead, num_encoder_layers, dropout, device)
+                for _ in range(num_encoder_layers)
+            ])
+
+    def forward(self, x):
+        for encoder_layer in self.encoder_layers:
+            x = encoder_layer(x)
+        return x
+
+
+
+class Transformer(nn.Module):
+    def __init__(self, seq_len, emb_dim, hidden_dim=512, dim_feedforward=2048, nhead=8, num_encoder_layers=6, dropout=0.1, device='cpu'):
+        super().__init__()
+        self.seq_len = seq_len
+        self.emb_dim = emb_dim
+        self.device = device
+        self.num_encoder_layers = num_encoder_layers
+        self.dim_feedforward = dim_feedforward
+        self.nhead = nhead
+        self.dropout = dropout
+
+        self.encoder = Encoder(seq_len, emb_dim, dim_feedforward, nhead, num_encoder_layers, dropout, device)
+        self.cross_attention = nn.MultiheadAttention(emb_dim, nhead, batch_first=True)
+        self.layer_norm = nn.LayerNorm(emb_dim)
+        self.dropout_layer = nn.Dropout(dropout)
+        self.linear = nn.Linear(emb_dim, hidden_dim)
+        self.relu = nn.ReLU()
+        self.linear2 = nn.Linear(hidden_dim, 1)
+
+
+    def forward(self, x):
+        x = x + self.position_encoding_sinusoid()
+        last_time_step = x[:, -1:, :]
+        x = self.encoder(x)
+        x, _ = self.cross_attention(last_time_step, x, x)
+        x = self.layer_norm(x + last_time_step)
+        x = self.dropout_layer(x)
+        x = x[:, 0, :]
+        x = self.linear(x)
+        x = self.relu(x)
+        x = self.linear2(x)
+        return x
+
+    def position_encoding_sinusoid(self):
+        seq_len, d_model = self.seq_len, self.emb_dim
+        pe = torch.zeros(seq_len, d_model)
+        position = torch.arange(0, seq_len).unsqueeze(1)
+        div_term = torch.exp((torch.arange(0, d_model, 2, dtype=torch.float) *
+                              -(math.log(10000.0) / d_model)))
+        pe[:, 0::2] = torch.sin(position.float() * div_term)
+        pe[:, 1::2] = torch.cos(position.float() * div_term)
+        pe = pe.to(self.device)
+
+        return pe
