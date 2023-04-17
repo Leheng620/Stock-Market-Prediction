@@ -41,8 +41,8 @@ Some of the SOTA models and techniques used for predicting stock trends and pric
 
 # TODO
 - [x] stock data collection
-- [ ] news data collection
-- [ ] news data processing
+- [x] news data collection
+- [x] news data processing
 - [ ] paper reading and selection
   - [ ] [ADD: Augmented Disentanglement Distillation Framework for Improving Stock Trend Forecasting](https://paperswithcode.com/paper/add-augmented-disentanglement-distillation)
   - [ ] 
