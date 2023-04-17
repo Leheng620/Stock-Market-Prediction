@@ -6,7 +6,7 @@ import pandas as pd
 
 
 class PriceFeatureOnly(Dataset):
-    def __init__(self, tickers, look_back=30, train=True):
+    def __init__(self, tickers, look_back=30, train=True, data_dir='./price'):
         # for each ticker, we create a sequence of length L (look_back),
         # there will ba a lot of overlapping sequences
         # if a ticker contains 90 days of data, we can create 90 - L sequences of length L + 1
@@ -18,7 +18,7 @@ class PriceFeatureOnly(Dataset):
         targets = []  # (N, D)
         scalers = []
         for ticker in tickers:
-            df = pd.read_csv(f'./price/{ticker}.csv', index_col='Date', parse_dates=True)
+            df = pd.read_csv(f'{data_dir}/{ticker}.csv', index_col='Date', parse_dates=True)
             df = df[['Adj Close']]
 
             # (N, L, D) -> (number_of_sequence, sequence_length, feature_dimension)
@@ -75,7 +75,7 @@ class PriceFeatureOnly(Dataset):
 
 
 class TransformerMultiFeaturesDataset(Dataset):
-    def __init__(self, tickers, look_back=30, train=True):
+    def __init__(self, tickers, look_back=30, train=True, data_dir='./price'):
         # for each ticker, we create a sequence of length L (look_back),
         # there will ba a lot of overlapping sequences
         # if a ticker contains 90 days of data, we can create 90 - L sequences of length L + 1
@@ -87,7 +87,7 @@ class TransformerMultiFeaturesDataset(Dataset):
         targets = []  # (N, D)
         scalers = []
         for ticker in tickers:
-            df = pd.read_csv(f'./price/{ticker}.csv', index_col='Date', parse_dates=True)
+            df = pd.read_csv(f'{data_dir}/{ticker}.csv', index_col='Date', parse_dates=True)
             df = df[['Adj Close', 'High', 'Low', 'Volume']]
 
             # (N, L, D) -> (number_of_sequence, sequence_length, feature_dimension)
@@ -143,8 +143,8 @@ class TransformerMultiFeaturesDataset(Dataset):
         return self.data[idx], self.target[idx][:,0]
 
 
-def get_data_loader(dataset, tickers, look_back=30, batch_size=32, shuffle=True, train=True):
-    data = dataset(tickers, look_back, train)
+def get_data_loader(dataset, tickers, look_back=30, batch_size=32, shuffle=True, train=True, data_dir='./price'):
+    data = dataset(tickers, look_back, train, data_dir=data_dir)
     return DataLoader(data, batch_size=batch_size, shuffle=shuffle)
 
 # train = get_data_loader(TransformerMultiFeaturesDataset, ['MSFT'], look_back=60, batch_size=32, shuffle=False)
