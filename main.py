@@ -104,6 +104,8 @@ def evaluate(model, dataloader, criterion, device):
             volumes = inputs["volumes"].to(device)
             labels = inputs["labels"].to(device)
 
+
+
             outputs = model(input_ids, attention_mask, prices, volumes)
             loss = criterion(outputs[:, -1], labels)
 

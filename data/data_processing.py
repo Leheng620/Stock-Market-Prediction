@@ -5,10 +5,20 @@ from datetime import datetime
 
 
 import json
+def label_data(yesterday, today):
+    if today > yesterday*1.0055:
+        return 1
+    elif today < yesterday*0.995:
+        return 0
+    else:
+        return None
 
 def create_time_window_data(data, time_window):
     time_window_data = []
     for i in range(len(data) - time_window + 1):
+        label = label_data(data[i+time_window-2]['adj_close'], data[i+time_window-1]['adj_close'])
+        if label is None:
+            continue
         window_data = {
             'name': data[i]['name'],
             'date': data[i]['date'],
@@ -19,7 +29,7 @@ def create_time_window_data(data, time_window):
             'volume': [float(d['volume']) for d in data[i:i+time_window-1]],
             'adj_close': [float(d['adj_close']) for d in data[i:i+time_window-1]],
             'text': [d['text'] for d in data[i:i+time_window-1]],
-            'label': 1 if data[i+time_window-1]['close'] >= data[i+time_window-2]['close'] else 0
+            'label': int(label)
         }
         time_window_data.append(window_data)
     return time_window_data
@@ -110,7 +120,7 @@ def balance_labels(all_data):
     count_0, count_1 = 0, 0
 
     # Add instances to the balanced data until both labels reach the min_count
-    for window_data in time_window_data:
+    for window_data in all_data:
         if window_data['label'] == 0 and count_0 < min_count:
             balanced_data.append(window_data)
             count_0 += 1
@@ -131,10 +141,28 @@ for item in os.listdir('./tweet/'):
     stock_name = item
     print(stock_name)
     aligned_data = align_stock_and_twitter_data(stock_name)
-    save_aligned_data("test",aligned_data)
-    time_window = 5  # Change this value according to your needs
+    time_window = 30  # Change this value according to your needs
     time_window_data = create_time_window_data(aligned_data, time_window)
     all += (time_window_data)
 balanced_data = balance_labels(all)
+print(len(balanced_data))
 
-save_aligned_data(stock_name, balanced_data)
+save_aligned_data("final", balanced_data)
+
+
+# 30
+# Count of 0s:  5435
+# Count of 1s:  5830
+# Minimum count:  5435
+# 10870
+
+# 15
+# Count of 0s:  5793
+# Count of 1s:  6310
+# Minimum count:  5793
+# 11586
+# 5
+# Count of 0s:  6104
+# Count of 1s:  6607
+# Minimum count:  6104
+# 12208
