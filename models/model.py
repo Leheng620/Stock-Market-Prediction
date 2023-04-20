@@ -139,3 +139,10 @@ class Transformer(nn.Module):
         pe = pe.to(self.device)
 
         return pe
+
+
+
+# class TEA(nn.Model):
+#     # wordvec: ndarray
+#     vocab_size = wordvec.shape[0]
+#     self.embedding_dim = wordvec.shape[1]

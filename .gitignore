@@ -1,5 +1,7 @@
 # data
 ticker/*
+data/*
+*.json
 
 # Python
 *.pyc
